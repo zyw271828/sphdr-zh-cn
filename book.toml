@@ -5,3 +5,6 @@ description = "《加盐密码散列的正确方法（Salted Password Hashing - 
 src = "src"
 language = "zh-CN"
 multilingual = false
+
+[output.html]
+git-repository-url = "https://github.com/zyw271828/sphdr-zh-cn"
