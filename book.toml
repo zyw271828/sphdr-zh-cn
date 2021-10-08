@@ -1,6 +1,7 @@
 [book]
+title = "加盐密码散列的正确方法"
 authors = ["Defuse Security"]
+description = "《加盐密码散列的正确方法（Salted Password Hashing - Doing it Right）》简体中文版"
+src = "src"
 language = "zh-CN"
 multilingual = false
-src = "src"
-title = "加盐密码散列的正确方法"
