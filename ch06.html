@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>常见问题 - 加盐密码散列的正确方法</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="《加盐密码散列的正确方法（Salted Password Hashing - Doing it Right）》简体中文版">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">README</a></li><li class="chapter-item expanded affix "><a href="ch00.html">前言</a></li><li class="chapter-item expanded "><a href="ch01.html"><strong aria-hidden="true">1.</strong> 什么是密码散列？</a></li><li class="chapter-item expanded "><a href="ch02.html"><strong aria-hidden="true">2.</strong> 散列是如何被破解的</a></li><li class="chapter-item expanded "><a href="ch03.html"><strong aria-hidden="true">3.</strong> 加盐</a></li><li class="chapter-item expanded "><a href="ch04.html"><strong aria-hidden="true">4.</strong> 无效的散列方法</a></li><li class="chapter-item expanded "><a href="ch05.html"><strong aria-hidden="true">5.</strong> 如何正确散列</a></li><li class="chapter-item expanded "><a href="ch06.html" class="active"><strong aria-hidden="true">6.</strong> 常见问题</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">加盐密码散列的正确方法</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/zyw271828/sphdr-zh-cn" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="常见问题"><a class="header" href="#常见问题">常见问题</a></h1>
+<h2 id="what-hash-algorithm-should-i-use"><a class="header" href="#what-hash-algorithm-should-i-use">What hash algorithm should I use?</a></h2>
+<p><strong>DO</strong> use:</p>
+<ul>
+<li>Well-designed key stretching algorithms such as <a href="http://en.wikipedia.org/wiki/PBKDF2">PBKDF2</a>, <a href="http://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>, and <a href="http://www.tarsnap.com/scrypt.html">scrypt</a>.</li>
+<li>OpenWall's <a href="http://www.openwall.com/phpass/">Portable PHP password hashing framework</a></li>
+<li><a href="https://github.com/defuse/password-hashing">My implementations of PBKDF2 in PHP, C#, Java, and Ruby</a>.</li>
+<li>Secure versions of <a href="http://en.wikipedia.org/wiki/Crypt_(Unix)#Library_Function_crypt.283.29">crypt</a> ($2y$, $5$, $6$)</li>
+</ul>
+<p><strong>DO NOT</strong> use:</p>
+<ul>
+<li>Fast cryptographic hash functions such as MD5, SHA1, SHA256, SHA512, RipeMD, WHIRLPOOL, SHA3, etc.</li>
+<li>Insecure versions of crypt ($1$, $2$, $2x$, $3$).</li>
+<li>Any algorithm that you designed yourself. Only use technology that is in the public domain and has been well-tested by experienced cryptographers.</li>
+</ul>
+<p>Even though there are no cryptographic attacks on MD5 or SHA1 that make their hashes easier to crack, they are old and are widely considered (somewhat incorrectly) to be inadequate for password storage. So I don't recommend using them. An exception to this rule is PBKDF2, which is frequently implemented using SHA1 as the underlying hash function.</p>
+<h2 id="how-should-i-allow-users-to-reset-their-password-when-they-forget-it"><a class="header" href="#how-should-i-allow-users-to-reset-their-password-when-they-forget-it">How should I allow users to reset their password when they forget it?</a></h2>
+<p>It is my personal opinion that all password reset mechanisms in widespread use today are insecure. If you have high security requirements, such as an encryption service would, do not let the user reset their password.</p>
+<p>Most websites use an email loop to authenticate users who have forgotten their password. To do this, generate a random single-use token that is strongly tied to the account. Include it in a password reset link sent to the user's email address. When the user clicks a password reset link containing a valid token, prompt them for a new password. Be sure that the token is strongly tied to the user account so that an attacker can't use a token sent to his own email address to reset a different user's password.</p>
+<p>The token must be set to expire in 15 minutes or after it is used, whichever comes first. It is also a good idea to expire any existing password tokens when the user logs in (they remembered their password) or requests another reset token. If a token doesn't expire, it can be forever used to break into the user's account. Email (SMTP) is a plain-text protocol, and there may be malicious routers on the internet recording email traffic. And, a user's email account (including the reset link) may be compromised long after their password has been changed. Making the token expire as soon as possible reduces the user's exposure to these attacks.</p>
+<p>Attackers will be able to modify the tokens, so don't store the user account information or timeout information in them. They should be an unpredictable random binary blob used only to identify a record in a database table.</p>
+<p>Never send the user a new password over email. Remember to pick a new random salt when the user resets their password. Don't re-use the one that was used to hash their old password.</p>
+<h2 id="what-should-i-do-if-my-user-account-database-gets-leakedhacked"><a class="header" href="#what-should-i-do-if-my-user-account-database-gets-leakedhacked">What should I do if my user account database gets leaked/hacked?</a></h2>
+<p>Your first priority is to determine how the system was compromised and patch the vulnerability the attacker used to get in. If you do not have experience responding to breaches, I highly recommend hiring a third-party security firm.</p>
+<p>It may be tempting to cover up the breach and hope nobody notices. However, trying to cover up a breach makes you look worse, because you're putting your users at further risk by not informing them that their passwords and other personal information may be compromised. You must inform your users as soon as possible—even if you don't yet fully understand what happened. Put a notice on the front page of your website that links to a page with more detailed information, and send a notice to each user by email if possible.</p>
+<p>Explain to your users exactly how their passwords were protected—hopefully hashed with salt—and that even though they were protected with a salted hash, a malicious hacker can still run dictionary and brute force attacks on the hashes. Malicious hackers will use any passwords they find to try to login to a user's account on a different website, hoping they used the same password on both websites. Inform your users of this risk and recommend that they change their password on any website or service where they used a similar password. Force them to change their password for your service the next time they log in. Most users will try to &quot;change&quot; their password to the original password to get around the forced change quickly. Use the current password hash to ensure that they cannot do this.</p>
+<p>It is likely, even with salted slow hashes, that an attacker will be able to crack some of the weak passwords very quickly. To reduce the attacker's window of opportunity to use these passwords, you should require, in addition to the current password, an email loop for authentication until the user has changed their password. See the previous question, &quot;How should I allow users to reset their password when they forget it?&quot; for tips on implementing email loop authentication.</p>
+<p>Also tell your users what kind of personal information was stored on the website. If your database includes credit card numbers, you should instruct your users to look over their recent and future bills closely and cancel their credit card.</p>
+<h2 id="what-should-my-password-policy-be-should-i-enforce-strong-passwords"><a class="header" href="#what-should-my-password-policy-be-should-i-enforce-strong-passwords">What should my password policy be? Should I enforce strong passwords?</a></h2>
+<p>If your service doesn't have strict security requirements, then don't limit your users. I recommend showing users information about the strength of their password as they type it, letting them decide how secure they want their password to be. If you have special security needs, enforce a minimum length of 12 characters and require at least two letters, two digits, and two symbols.</p>
+<p>Do not force your users to change their password more often than once every six months, as doing so creates &quot;user fatigue&quot; and makes users less likely to choose good passwords. Instead, train users to change their password whenever they feel it has been compromised, and to never tell their password to anyone. If it is a business setting, encourage employees to use paid time to memorize and practice their password.</p>
+<h2 id="if-an-attacker-has-access-to-my-database-cant-they-just-replace-the-hash-of-my-password-with-their-own-hash-and-login"><a class="header" href="#if-an-attacker-has-access-to-my-database-cant-they-just-replace-the-hash-of-my-password-with-their-own-hash-and-login">If an attacker has access to my database, can't they just replace the hash of my password with their own hash and login?</a></h2>
+<p>Yes, but if someone has access to your database, they probably already have access to everything on your server, so they wouldn't need to login to your account to get what they want. The purpose of password hashing (in the context of a website) is not to protect the website from being breached, but to protect the passwords if a breach does occur.</p>
+<p>You can prevent hashes from being replaced during a SQL injection attack by connecting to the database with two users with different permissions. One for the 'create account' code and one for the 'login' code. The 'create account' code should be able to read and write to the user table, but the 'login' code should only be able to read.</p>
+<h2 id="why-do-i-have-to-use-a-special-algorithm-like-hmac-why-cant-i-just-append-the-password-to-the-secret-key"><a class="header" href="#why-do-i-have-to-use-a-special-algorithm-like-hmac-why-cant-i-just-append-the-password-to-the-secret-key">Why do I have to use a special algorithm like HMAC? Why can't I just append the password to the secret key?</a></h2>
+<p>Hash functions like MD5, SHA1, and SHA2 use the <a href="http://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction">Merkle–Damgård construction</a>, which makes them vulnerable to what are known as length extension attacks. This means that given a hash H(X), an attacker can find the value of H(pad(X) + Y), for any other string Y, without knowing X. pad(X) is the padding function used by the hash.</p>
+<p>This means that given a hash H(key + message), an attacker can compute H(pad(key + message) + extension), without knowing the key. If the hash was being used as a message authentication code, using the key to prevent an attacker from being able to modify the message and replace it with a different valid hash, the system has failed, since the attacker now has a valid hash of message + extension.</p>
+<p>It is not clear how an attacker could use this attack to crack a password hash quicker. However, because of the attack, it is considered bad practice to use a plain hash function for keyed hashing. A clever cryptographer may one day come up with a clever way to use these attacks to make cracking faster, so use HMAC.</p>
+<h2 id="should-the-salt-come-before-or-after-the-password"><a class="header" href="#should-the-salt-come-before-or-after-the-password">Should the salt come before or after the password?</a></h2>
+<p>It doesn't matter, but pick one and stick with it for interoperability's sake. Having the salt come before the password seems to be more common.</p>
+<h2 id="why-does-the-hashing-code-on-this-page-compare-the-hashes-in-length-constant-time"><a class="header" href="#why-does-the-hashing-code-on-this-page-compare-the-hashes-in-length-constant-time">Why does the hashing code on this page compare the hashes in &quot;length-constant&quot; time?</a></h2>
+<p>Comparing the hashes in &quot;length-constant&quot; time ensures that an attacker cannot extract the hash of a password in an on-line system using a timing attack, then crack it off-line.</p>
+<p>The standard way to check if two sequences of bytes (strings) are the same is to compare the first byte, then the second, then the third, and so on. As soon as you find a byte that isn't the same for both strings, you know they are different and can return a negative response immediately. If you make it through both strings without finding any bytes that differ, you know the strings are the same and can return a positive result. This means that comparing two strings can take a different amount of time depending on how much of the strings match.</p>
+<p>For example, a standard comparison of the strings &quot;xyzabc&quot; and &quot;abcxyz&quot; would immediately see that the first character is different and wouldn't bother to check the rest of the string. On the other hand, when the strings &quot;aaaaaaaaaaB&quot; and &quot;aaaaaaaaaaZ&quot; are compared, the comparison algorithm scans through the block of &quot;a&quot; before it determines the strings are unequal.</p>
+<p>Suppose an attacker wants to break into an on-line system that rate limits authentication attempts to one attempt per second. Also suppose the attacker knows all of the parameters to the password hash (salt, hash type, etc), except for the hash and (obviously) the password. If the attacker can get a precise measurement of how long it takes the on-line system to compare the hash of the real password with the hash of a password the attacker provides, he can use the timing attack to extract part of the hash and crack it using an offline attack, bypassing the system's rate limiting.</p>
+<p>First, the attacker finds 256 strings whose hashes begin with every possible byte. He sends each string to the on-line system, recording the amount of time it takes the system to respond. The string that takes the longest will be the one whose hash's first byte matches the real hash's first byte. The attacker now knows the first byte, and can continue the attack in a similar manner on the second byte, then the third, and so on. Once the attacker knows enough of the hash, he can use his own hardware to crack it, without being rate limited by the system.</p>
+<p>It might seem like it would be impossible to run a timing attack over a network. However, it has been done, and has been <a href="https://crypto.stanford.edu/%7Edabo/papers/ssl-timing.pdf">shown to be practical</a>. That's why the code on this page compares strings in a way that takes the same amount of time no matter how much of the strings match.</p>
+<h2 id="how-does-the-slowequals-code-work"><a class="header" href="#how-does-the-slowequals-code-work">How does the SlowEquals code work?</a></h2>
+<p>The previous question explains why SlowEquals is necessary, this one explains how the code actually works.</p>
+<pre><code class="language-java">private static boolean slowEquals(byte[] a, byte[] b)
+{
+    int diff = a.length ^ b.length;
+    for(int i = 0; i &lt; a.length &amp;&amp; i &lt; b.length; i++)
+        diff |= a[i] ^ b[i];
+    return diff == 0;
+}
+</code></pre>
+<p>The code uses the XOR &quot;^&quot; operator to compare integers for equality, instead of the &quot;==&quot; operator. The reason why is explained below. The result of XORing two integers will be zero if and only if they are exactly the same. This is because 0 XOR 0 = 0, 1 XOR 1 = 0, 0 XOR 1 = 1, 1 XOR 0 = 1. If we apply that to all the bits in both integers, the result will be zero only if all the bits matched.</p>
+<p>So, in the first line, if a.length is equal to b.length, the diff variable will get a zero value, but if not, it will get some non-zero value. Next, we compare the bytes using XOR, and OR the result into diff. This will set diff to a non-zero value if the bytes differ. Because ORing never un-sets bits, the only way diff will be zero at the end of the loop is if it was zero before the loop began (a.length == b.length) and all of the bytes in the two arrays match (none of the XORs resulted in a non-zero value).</p>
+<p>The reason we need to use XOR instead of the &quot;==&quot; operator to compare integers is that &quot;==&quot; is usually translated/compiled/interpreted as a branch. For example, the C code <code>&quot;diff &amp;= a == b&quot;</code> might compile to the following x86 assembly:</p>
+<pre><code class="language-assembly">MOV EAX, [A]
+CMP [B], EAX
+JZ equal
+JMP done
+equal:
+AND [VALID], 1
+done:
+AND [VALID], 0
+</code></pre>
+<p>The branching makes the code execute in a different amount of time depending on the equality of the integers and the CPU's internal branch prediction state.</p>
+<p>The C code <code>&quot;diff |= a ^ b&quot;</code> should compile to something like the following, whose execution time does not depend on the equality of the integers:</p>
+<pre><code class="language-assembly">MOV EAX, [A]
+XOR EAX, [B]
+OR [DIFF], EAX
+</code></pre>
+<h2 id="why-bother-hashing"><a class="header" href="#why-bother-hashing">Why bother hashing?</a></h2>
+<p>Your users are entering their password into your website. They are trusting you with their security. If your database gets hacked, and your users' passwords are unprotected, then malicious hackers can use those passwords to compromise your users' accounts on other websites and services (most people use the same password everywhere). It's not just your security that's at risk, it's your users'. You are responsible for your users' security.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch05.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch05.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
