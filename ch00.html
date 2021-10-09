@@ -138,7 +138,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="前言"><a class="header" href="#前言">前言</a></h1>
-<p>如果您是一名 Web 开发者，您很可能需要建立一个用户账户系统。对用户账户系统来说，最重要的部分就是如何保护用户的密码。用户账户数据库经常被入侵，因此，如果您的网站遭到破坏，您绝对需要采取措施来保护用户的密码。保护密码的最佳方法是使用<strong>加盐密码散列（Salted Password Hashing）</strong>。这篇文章将会解释原因，并展示加盐密码散列的正确方法。</p>
+<p>如果您是一名 Web 开发者，您很可能需要建立一个用户账户系统。对用户账户系统来说，最重要的部分就是如何保护用户的密码。用户账户数据库经常被入侵，因此，如果您的网站被攻破，您绝对需要采取措施来保护用户的密码。保护密码的最佳方法是使用<strong>加盐密码散列（Salted Password Hashing）</strong>。这篇文章将会解释原因，并展示加盐密码散列的正确方法。</p>
 <p>关于如何正确进行密码散列有很多相互矛盾的想法以及误解，可能是由于网络上的错误信息太多。其实，密码散列属于非常简单的事情，但有很多人都弄错了。在这篇文章里，我希望不仅可以解释正确的方法，还能解释为什么应该这样做。</p>
 <blockquote>
 <p><strong>重要警告：</strong> 如果您正在考虑自己编写密码散列代码，<strong>请不要这样做！</strong> 这太容易搞砸了。不，您在大学上的密码学课程不能让您免于这个警告。这适用于所有人：<strong>不要自己编写密码学算法！</strong> 毕竟存储密码的问题已经被解决了。您可以使用 <a href="http://www.openwall.com/phpass/">phpass</a>，位于 <a href="https://github.com/defuse/password-hashing">defuse/password-hashing</a> 的 PHP、C#、Java 和 Ruby 实现，或者 <a href="https://download.libsodium.org/doc/password_hashing/index.html">libsodium</a>。</p>
