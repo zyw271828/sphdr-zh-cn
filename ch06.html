@@ -154,17 +154,17 @@
 </ul>
 <p>尽管还没有对 MD5 或 SHA1 的密码学攻击来让它们的散列更容易被破解，它们也已经过时并且被广泛认为（好像还不够广泛）强度不足以存储密码。所以我不建议使用它们。此规则的一个例外是 PBKDF2，它的实现经常把 SHA1 作为底层散列函数。</p>
 <h2 id="当用户忘记密码时我应该如何让用户重置密码"><a class="header" href="#当用户忘记密码时我应该如何让用户重置密码">当用户忘记密码时，我应该如何让用户重置密码？</a></h2>
-<p>It is my personal opinion that all password reset mechanisms in widespread use today are insecure. If you have high security requirements, such as an encryption service would, do not let the user reset their password.</p>
-<p>Most websites use an email loop to authenticate users who have forgotten their password. To do this, generate a random single-use token that is strongly tied to the account. Include it in a password reset link sent to the user's email address. When the user clicks a password reset link containing a valid token, prompt them for a new password. Be sure that the token is strongly tied to the user account so that an attacker can't use a token sent to his own email address to reset a different user's password.</p>
-<p>The token must be set to expire in 15 minutes or after it is used, whichever comes first. It is also a good idea to expire any existing password tokens when the user logs in (they remembered their password) or requests another reset token. If a token doesn't expire, it can be forever used to break into the user's account. Email (SMTP) is a plain-text protocol, and there may be malicious routers on the internet recording email traffic. And, a user's email account (including the reset link) may be compromised long after their password has been changed. Making the token expire as soon as possible reduces the user's exposure to these attacks.</p>
-<p>Attackers will be able to modify the tokens, so don't store the user account information or timeout information in them. They should be an unpredictable random binary blob used only to identify a record in a database table.</p>
-<p>Never send the user a new password over email. Remember to pick a new random salt when the user resets their password. Don't re-use the one that was used to hash their old password.</p>
+<p>我个人认为，当今广泛使用的所有密码重置机制都是不安全的。如果您有很高的安全要求，例如提供加密服务，请不要让用户重置他们的密码。</p>
+<p>大多数网站使用电子邮件循环来对忘记密码的用户进行身份验证。为此，需要生成一个与账户紧密相关的随机<strong>一次性</strong>令牌。将令牌包含在发送到用户电子邮件地址的密码重置链接中。当用户点击包含有效令牌的密码重置链接时，提示他们输入新密码。需要确保令牌与用户账户紧密相关，使攻击者无法用发送到自己电子邮件地址的令牌来重置其他用户的密码。</p>
+<p>令牌必须设置为在 15 分钟后或使用后到期，以先到者为准。当用户登录（想起了密码）或请求另一个重置令牌时，让任何现有的密码令牌过期也是一个不错的主意。如果令牌永不过期，就可以永远被用于闯入用户的账户中。电子邮件（SMTP）是一种纯文本协议，互联网上可能存在记录电子邮件流量的恶意路由器。此外，用户的电子邮件账户（包括重置链接）可能会在用户密码更改很长时间之后被盗用。使令牌尽快到期可以减少用户遭受这些攻击的风险。</p>
+<p>攻击者将会有能力修改令牌，因此不要在令牌中存储用户账户信息或超时信息。令牌应该是一个不可预测的随机二进制大型对象（BLOB），仅用于标识数据库表中的记录。</p>
+<p>永远不要通过电子邮件向用户发送新密码。不要忘记在用户重置密码时选择一个新的随机盐。不要重复使用用于散列旧密码的盐。</p>
 <h2 id="如果我的用户账户数据库被泄露入侵我应该做什么"><a class="header" href="#如果我的用户账户数据库被泄露入侵我应该做什么">如果我的用户账户数据库被泄露/入侵，我应该做什么？</a></h2>
-<p>Your first priority is to determine how the system was compromised and patch the vulnerability the attacker used to get in. If you do not have experience responding to breaches, I highly recommend hiring a third-party security firm.</p>
-<p>It may be tempting to cover up the breach and hope nobody notices. However, trying to cover up a breach makes you look worse, because you're putting your users at further risk by not informing them that their passwords and other personal information may be compromised. You must inform your users as soon as possible—even if you don't yet fully understand what happened. Put a notice on the front page of your website that links to a page with more detailed information, and send a notice to each user by email if possible.</p>
-<p>Explain to your users exactly how their passwords were protected—hopefully hashed with salt—and that even though they were protected with a salted hash, a malicious hacker can still run dictionary and brute force attacks on the hashes. Malicious hackers will use any passwords they find to try to login to a user's account on a different website, hoping they used the same password on both websites. Inform your users of this risk and recommend that they change their password on any website or service where they used a similar password. Force them to change their password for your service the next time they log in. Most users will try to &quot;change&quot; their password to the original password to get around the forced change quickly. Use the current password hash to ensure that they cannot do this.</p>
-<p>It is likely, even with salted slow hashes, that an attacker will be able to crack some of the weak passwords very quickly. To reduce the attacker's window of opportunity to use these passwords, you should require, in addition to the current password, an email loop for authentication until the user has changed their password. See the previous question, &quot;How should I allow users to reset their password when they forget it?&quot; for tips on implementing email loop authentication.</p>
-<p>Also tell your users what kind of personal information was stored on the website. If your database includes credit card numbers, you should instruct your users to look over their recent and future bills closely and cancel their credit card.</p>
+<p>您的首要任务是确定系统是如何被入侵的，并修补攻击者用来入侵的漏洞。如果您没有应对入侵行为的经验，我强烈建议您聘请第三方安全公司。</p>
+<p>选择掩盖入侵行为并且希望没有人注意到入侵的发生可能十分诱人。但是，试图掩盖入侵行为会让您看起来更不负责任，因为您没有通知用户他们的密码和其他个人信息可能已经被泄露，从而使他们面临更大的风险。您必须尽快通知您的用户——即使您还没有完全理解发生了什么。请在您网站的首页放上一条通知，链接到包含更详细信息的页面，并尽可能通过电子邮件向每个用户发送通知。</p>
+<p>向您的用户准确地解释他们的密码是如何被保护的——希望您使用了加盐散列——即使密码受到了加盐散列的保护，恶意黑客仍然可以对散列实施字典攻击和暴力破解。恶意黑客将使用他们找到的任何密码尝试登录不同网站上的用户账户，期望用户在两个网站上使用了相同的密码。将这种风险告知您的用户，并建议他们在使用了类似密码的任何网站或服务上更改密码。强制他们在下次登录您的服务时更改密码。大多数用户会尝试将他们的密码「更改」为与原来相同的密码来快速绕过强制更改。请使用当前密码的散列值来确保他们不能这样做。</p>
+<p>即使使用了加盐的慢速散列，攻击者也很可能会很快破解出一些弱密码。为了减小攻击者使用这些密码的机会窗口，除了当前密码之外，您还应该要求用户使用电子邮件循环来进行身份验证，直到用户更改密码为止。请阅读上一个问题「当用户忘记密码时，我应该如何让用户重置密码？」中关于实现电子邮件循环身份验证的提示。</p>
+<p>还应该将网站上存储了哪些类型的个人信息告知您的用户。如果您的数据库包含信用卡号，您应该指导您的用户仔细查看他们最近和未来的账单并注销他们的信用卡。</p>
 <h2 id="我的密码策略应该如何设置我应该强制用户使用强密码吗"><a class="header" href="#我的密码策略应该如何设置我应该强制用户使用强密码吗">我的密码策略应该如何设置？我应该强制用户使用强密码吗？</a></h2>
 <p>如果您的服务没有严格的安全要求，就不要限制您的用户。我建议在用户输入密码时向他们展示有关密码强度的信息，让他们自己决定密码的安全性。如果您有特殊的安全需求，请强制要求密码的长度至少为 12 个字符，且至少有两个字母、两个数字和两个符号。</p>
 <p>不要强迫您的用户以六个月一次更高的频率更改密码，因为这样做会造成「用户疲劳」，让用户不太可能选择好的密码。相反，应该培训用户在他们觉得密码已经被泄露时更改密码，并且永远不要将他们的密码告诉任何人。如果是商业环境，应该鼓励员工利用带薪时间来记住和练习他们的密码。</p>
@@ -172,20 +172,20 @@
 <p>的确可以，但是如果有人可以访问您的数据库，他们可能已经能够访问您服务器上的所有内容，因此他们无需登录您的账户就能获得他们想要的任何内容。在网站中使用的密码散列技术目的不在于保护网站不被攻破，而是在网站已经被攻破时保护密码。</p>
 <p>您可以使用具有不同权限的两个用户连接到数据库来防止散列值在 SQL 注入攻击期间被替换。一个用户用于「创建账户」部分的语句，另一个用户用于「登录」部分的语句。「创建账户」部分的语句应该能读取和写入用户表，但「登录」部分的语句应该只能读取。</p>
 <h2 id="为什么我必须使用像-hmac-这样的特殊算法为什么我不能直接将密码附加到私钥后面"><a class="header" href="#为什么我必须使用像-hmac-这样的特殊算法为什么我不能直接将密码附加到私钥后面">为什么我必须使用像 HMAC 这样的特殊算法？为什么我不能直接将密码附加到私钥后面？</a></h2>
-<p>Hash functions like MD5, SHA1, and SHA2 use the <a href="http://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction">Merkle–Damgård construction</a>, which makes them vulnerable to what are known as length extension attacks. This means that given a hash H(X), an attacker can find the value of H(pad(X) + Y), for any other string Y, without knowing X. pad(X) is the padding function used by the hash.</p>
-<p>This means that given a hash H(key + message), an attacker can compute H(pad(key + message) + extension), without knowing the key. If the hash was being used as a message authentication code, using the key to prevent an attacker from being able to modify the message and replace it with a different valid hash, the system has failed, since the attacker now has a valid hash of message + extension.</p>
-<p>It is not clear how an attacker could use this attack to crack a password hash quicker. However, because of the attack, it is considered bad practice to use a plain hash function for keyed hashing. A clever cryptographer may one day come up with a clever way to use these attacks to make cracking faster, so use HMAC.</p>
+<p>MD5、SHA1 和 SHA2 等散列函数使用了 <a href="http://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction">Merkle–Damgård 结构</a>，会让它们容易受到所谓的长度扩展攻击。这意味着给定一个散列 H(X)，攻击者可以在不知道 X 的情况下找到任何其他字符串 Y 的 H(pad(X) + Y) 的值。pad(X) 是散列使用的填充函数。</p>
+<p>这意味着给定散列 H(密钥 + 消息)，攻击者可以在不知道密钥的情况下计算出 H(pad(密钥 + 消息) + 扩展)。如果散列被用作消息验证码，使用密钥来防止攻击者修改消息并将消息替换为不同的有效散列，则系统会失败，因为现在攻击者已经拥有了有效的消息 + 扩展的散列。</p>
+<p>目前尚不清楚攻击者如何使用这种攻击来更快地破解密码散列。但是，由于这种攻击的存在，使用普通散列函数进行密钥散列被认为是不好的做法。一位聪明的密码学家有可能会在某天想出一种聪明的方法来利用这些攻击加快破解速度，因此请使用 HMAC。</p>
 <h2 id="盐应该在密码之前还是之后"><a class="header" href="#盐应该在密码之前还是之后">盐应该在密码之前还是之后？</a></h2>
 <p>这不重要，但为了互操作性，请选择一种并坚持下去。在密码之前加盐似乎更常见。</p>
 <h2 id="为什么此页面上的散列代码会在长度恒定的时间内比较散列值"><a class="header" href="#为什么此页面上的散列代码会在长度恒定的时间内比较散列值">为什么此页面上的散列代码会在「长度恒定」的时间内比较散列值？</a></h2>
-<p>Comparing the hashes in &quot;length-constant&quot; time ensures that an attacker cannot extract the hash of a password in an on-line system using a timing attack, then crack it off-line.</p>
-<p>The standard way to check if two sequences of bytes (strings) are the same is to compare the first byte, then the second, then the third, and so on. As soon as you find a byte that isn't the same for both strings, you know they are different and can return a negative response immediately. If you make it through both strings without finding any bytes that differ, you know the strings are the same and can return a positive result. This means that comparing two strings can take a different amount of time depending on how much of the strings match.</p>
-<p>For example, a standard comparison of the strings &quot;xyzabc&quot; and &quot;abcxyz&quot; would immediately see that the first character is different and wouldn't bother to check the rest of the string. On the other hand, when the strings &quot;aaaaaaaaaaB&quot; and &quot;aaaaaaaaaaZ&quot; are compared, the comparison algorithm scans through the block of &quot;a&quot; before it determines the strings are unequal.</p>
-<p>Suppose an attacker wants to break into an on-line system that rate limits authentication attempts to one attempt per second. Also suppose the attacker knows all of the parameters to the password hash (salt, hash type, etc), except for the hash and (obviously) the password. If the attacker can get a precise measurement of how long it takes the on-line system to compare the hash of the real password with the hash of a password the attacker provides, he can use the timing attack to extract part of the hash and crack it using an offline attack, bypassing the system's rate limiting.</p>
-<p>First, the attacker finds 256 strings whose hashes begin with every possible byte. He sends each string to the on-line system, recording the amount of time it takes the system to respond. The string that takes the longest will be the one whose hash's first byte matches the real hash's first byte. The attacker now knows the first byte, and can continue the attack in a similar manner on the second byte, then the third, and so on. Once the attacker knows enough of the hash, he can use his own hardware to crack it, without being rate limited by the system.</p>
-<p>It might seem like it would be impossible to run a timing attack over a network. However, it has been done, and has been <a href="https://crypto.stanford.edu/%7Edabo/papers/ssl-timing.pdf">shown to be practical</a>. That's why the code on this page compares strings in a way that takes the same amount of time no matter how much of the strings match.</p>
+<p>在「长度恒定」的时间内比较散列值可以确保攻击者无法使用定时攻击从在线系统中提取到密码的散列值，然后离线破解它。</p>
+<p>检查两个字节序列（字符串）是否相同的标准方法是先比较第一个字节，然后比较第二个，接着比较第三个，依此类推。一旦您发现两个字符串的某个字节不同，就会得知字符串是不同的，可以立即返回否定响应。如果您比较完了两个字符串却没有发现任何不同的字节，就可以确信字符串是相同的并返回肯定结果。这意味着比较两个字符串可能需要不同的时间，具体取决于字符串匹配的程度。</p>
+<p>例如，用标准比较方法比较字符串「xyzabc」和「abcxyz」会立即发现第一个字符就是不同的，并不会检查字符串的其余部分。另一方面，当比较字符串「aaaaaaaaaaB」和「aaaaaaaaaaZ」时，比较算法在确定字符串不相等之前会扫描所有的「a」。</p>
+<p>假设攻击者想要闯入一个将身份验证尝试速率限制为每秒一次的在线系统。还假设攻击者知道密码散列的所有参数（盐、散列类型等），除了散列本身和（显然不知道的）密码。如果攻击者能够精确测量在线系统将真实密码的散列值与攻击者提供密码的散列值进行比较所需的时间，就可以使用定时攻击来提取部分散列并使用离线攻击破解它，从而绕过系统的速率限制。</p>
+<p>首先，攻击者找到 256 个字符串，其散列值以每个可能的字节开头。先将每个字符串发送到在线系统，并记录系统响应所需的时间。花费时间最长的字符串就是散列的第一个字节与真实散列的第一个字节相匹配的字符串。攻击者得知了第一个字节后，可以用类似的方法继续攻击第二个字节、第三个字节，依此类推。一旦攻击者对散列值已经了解得足够多，就可以使用自己的硬件来破解它，不受系统的速率限制。</p>
+<p>在网络上实施定时攻击看上去似乎是不可能的。然而，这种攻击已经被完成过，并且<a href="https://crypto.stanford.edu/%7Edabo/papers/ssl-timing.pdf">已被证明是实用的</a>。这就是为什么此页面上的代码以一种无论字符串匹配程度有多高都花费相同时间进行比较的原因。</p>
 <h2 id="slowequals-代码是如何工作的"><a class="header" href="#slowequals-代码是如何工作的">SlowEquals 代码是如何工作的？</a></h2>
-<p>The previous question explains why SlowEquals is necessary, this one explains how the code actually works.</p>
+<p>上一个问题解释了为什么 SlowEquals 是必要的，而这个问题解释了代码实际的工作方式。</p>
 <pre><code class="language-java">private static boolean slowEquals(byte[] a, byte[] b)
 {
     int diff = a.length ^ b.length;
@@ -194,9 +194,9 @@
     return diff == 0;
 }
 </code></pre>
-<p>The code uses the XOR &quot;^&quot; operator to compare integers for equality, instead of the &quot;==&quot; operator. The reason why is explained below. The result of XORing two integers will be zero if and only if they are exactly the same. This is because 0 XOR 0 = 0, 1 XOR 1 = 0, 0 XOR 1 = 1, 1 XOR 0 = 1. If we apply that to all the bits in both integers, the result will be zero only if all the bits matched.</p>
-<p>So, in the first line, if a.length is equal to b.length, the diff variable will get a zero value, but if not, it will get some non-zero value. Next, we compare the bytes using XOR, and OR the result into diff. This will set diff to a non-zero value if the bytes differ. Because ORing never un-sets bits, the only way diff will be zero at the end of the loop is if it was zero before the loop began (a.length == b.length) and all of the bytes in the two arrays match (none of the XORs resulted in a non-zero value).</p>
-<p>The reason we need to use XOR instead of the &quot;==&quot; operator to compare integers is that &quot;==&quot; is usually translated/compiled/interpreted as a branch. For example, the C code <code>&quot;diff &amp;= a == b&quot;</code> might compile to the following x86 assembly:</p>
+<p>代码使用异或（XOR）的「^」运算符来比较整数是否相等，而不是「==」运算符。原因将在下面解释。当且仅当两个整数完全相同时，异或这两个整数的结果才为零。这是因为 0 XOR 0 = 0，1 XOR 1 = 0，0 XOR 1 = 1，1 XOR 0 = 1。如果我们将异或应用于两个整数中的所有位，那么仅当所有位都匹配时，结果才会为零。</p>
+<p>因此，在第一行中，如果 a.length 等于 b.length，则 diff 变量将会是零，如果不相等，diff 变量将会是非零值。接下来，我们使用 XOR 比较字节，并将结果 OR 到 diff 中。如果字节不同，就会将 diff 设置为非零值。由于 OR 永远不会取消设置位，所以当循环结束时 diff 为零的唯一情况是，它在循环开始之前就为零（a.length == b.length），且两个数组中的所有字节都匹配（没有任何一个 XOR 得到了非零值）。</p>
+<p>我们需要使用 XOR 而不是「==」运算符来比较整数的原因是「==」通常会被翻译/编译/解释为一个分支。例如，C 代码「<code>diff &amp;= a == b</code>」可能会被编译成以下 x86 汇编：</p>
 <pre><code class="language-assembly">MOV EAX, [A]
 CMP [B], EAX
 JZ equal
@@ -206,8 +206,8 @@ AND [VALID], 1
 done:
 AND [VALID], 0
 </code></pre>
-<p>The branching makes the code execute in a different amount of time depending on the equality of the integers and the CPU's internal branch prediction state.</p>
-<p>The C code <code>&quot;diff |= a ^ b&quot;</code> should compile to something like the following, whose execution time does not depend on the equality of the integers:</p>
+<p>根据整数是否相等和 CPU 内部的分支预测状态，分支会使代码在不同的时间内被执行。</p>
+<p>C 代码「<code>diff |= a ^ b</code>」应该会被编译成以下内容，其执行时间不依赖于整数是否相等：</p>
 <pre><code class="language-assembly">MOV EAX, [A]
 XOR EAX, [B]
 OR [DIFF], EAX
