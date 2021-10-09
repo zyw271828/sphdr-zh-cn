@@ -166,17 +166,17 @@
 <p>It is likely, even with salted slow hashes, that an attacker will be able to crack some of the weak passwords very quickly. To reduce the attacker's window of opportunity to use these passwords, you should require, in addition to the current password, an email loop for authentication until the user has changed their password. See the previous question, &quot;How should I allow users to reset their password when they forget it?&quot; for tips on implementing email loop authentication.</p>
 <p>Also tell your users what kind of personal information was stored on the website. If your database includes credit card numbers, you should instruct your users to look over their recent and future bills closely and cancel their credit card.</p>
 <h2 id="我的密码策略应该如何设置我应该强制用户使用强密码吗"><a class="header" href="#我的密码策略应该如何设置我应该强制用户使用强密码吗">我的密码策略应该如何设置？我应该强制用户使用强密码吗？</a></h2>
-<p>If your service doesn't have strict security requirements, then don't limit your users. I recommend showing users information about the strength of their password as they type it, letting them decide how secure they want their password to be. If you have special security needs, enforce a minimum length of 12 characters and require at least two letters, two digits, and two symbols.</p>
-<p>Do not force your users to change their password more often than once every six months, as doing so creates &quot;user fatigue&quot; and makes users less likely to choose good passwords. Instead, train users to change their password whenever they feel it has been compromised, and to never tell their password to anyone. If it is a business setting, encourage employees to use paid time to memorize and practice their password.</p>
+<p>如果您的服务没有严格的安全要求，就不要限制您的用户。我建议在用户输入密码时向他们展示有关密码强度的信息，让他们自己决定密码的安全性。如果您有特殊的安全需求，请强制要求密码的长度至少为 12 个字符，且至少有两个字母、两个数字和两个符号。</p>
+<p>不要强迫您的用户以六个月一次更高的频率更改密码，因为这样做会造成「用户疲劳」，让用户不太可能选择好的密码。相反，应该培训用户在他们觉得密码已经被泄露时更改密码，并且永远不要将他们的密码告诉任何人。如果是商业环境，应该鼓励员工利用带薪时间来记住和练习他们的密码。</p>
 <h2 id="如果攻击者可以访问我的数据库他们难道不能用自己的散列值替换掉我的密码散列值再登录吗"><a class="header" href="#如果攻击者可以访问我的数据库他们难道不能用自己的散列值替换掉我的密码散列值再登录吗">如果攻击者可以访问我的数据库，他们难道不能用自己的散列值替换掉我的密码散列值再登录吗？</a></h2>
-<p>Yes, but if someone has access to your database, they probably already have access to everything on your server, so they wouldn't need to login to your account to get what they want. The purpose of password hashing (in the context of a website) is not to protect the website from being breached, but to protect the passwords if a breach does occur.</p>
-<p>You can prevent hashes from being replaced during a SQL injection attack by connecting to the database with two users with different permissions. One for the 'create account' code and one for the 'login' code. The 'create account' code should be able to read and write to the user table, but the 'login' code should only be able to read.</p>
+<p>的确可以，但是如果有人可以访问您的数据库，他们可能已经能够访问您服务器上的所有内容，因此他们无需登录您的账户就能获得他们想要的任何内容。在网站中使用的密码散列技术目的不在于保护网站不被攻破，而是在网站已经被攻破时保护密码。</p>
+<p>您可以使用具有不同权限的两个用户连接到数据库来防止散列值在 SQL 注入攻击期间被替换。一个用户用于「创建账户」部分的语句，另一个用户用于「登录」部分的语句。「创建账户」部分的语句应该能读取和写入用户表，但「登录」部分的语句应该只能读取。</p>
 <h2 id="为什么我必须使用像-hmac-这样的特殊算法为什么我不能直接将密码附加到私钥后面"><a class="header" href="#为什么我必须使用像-hmac-这样的特殊算法为什么我不能直接将密码附加到私钥后面">为什么我必须使用像 HMAC 这样的特殊算法？为什么我不能直接将密码附加到私钥后面？</a></h2>
 <p>Hash functions like MD5, SHA1, and SHA2 use the <a href="http://en.wikipedia.org/wiki/Merkle%E2%80%93Damg%C3%A5rd_construction">Merkle–Damgård construction</a>, which makes them vulnerable to what are known as length extension attacks. This means that given a hash H(X), an attacker can find the value of H(pad(X) + Y), for any other string Y, without knowing X. pad(X) is the padding function used by the hash.</p>
 <p>This means that given a hash H(key + message), an attacker can compute H(pad(key + message) + extension), without knowing the key. If the hash was being used as a message authentication code, using the key to prevent an attacker from being able to modify the message and replace it with a different valid hash, the system has failed, since the attacker now has a valid hash of message + extension.</p>
 <p>It is not clear how an attacker could use this attack to crack a password hash quicker. However, because of the attack, it is considered bad practice to use a plain hash function for keyed hashing. A clever cryptographer may one day come up with a clever way to use these attacks to make cracking faster, so use HMAC.</p>
 <h2 id="盐应该在密码之前还是之后"><a class="header" href="#盐应该在密码之前还是之后">盐应该在密码之前还是之后？</a></h2>
-<p>It doesn't matter, but pick one and stick with it for interoperability's sake. Having the salt come before the password seems to be more common.</p>
+<p>这不重要，但为了互操作性，请选择一种并坚持下去。在密码之前加盐似乎更常见。</p>
 <h2 id="为什么此页面上的散列代码会在长度恒定的时间内比较散列值"><a class="header" href="#为什么此页面上的散列代码会在长度恒定的时间内比较散列值">为什么此页面上的散列代码会在「长度恒定」的时间内比较散列值？</a></h2>
 <p>Comparing the hashes in &quot;length-constant&quot; time ensures that an attacker cannot extract the hash of a password in an on-line system using a timing attack, then crack it off-line.</p>
 <p>The standard way to check if two sequences of bytes (strings) are the same is to compare the first byte, then the second, then the third, and so on. As soon as you find a byte that isn't the same for both strings, you know they are different and can return a negative response immediately. If you make it through both strings without finding any bytes that differ, you know the strings are the same and can return a positive result. This means that comparing two strings can take a different amount of time depending on how much of the strings match.</p>
@@ -212,8 +212,8 @@ AND [VALID], 0
 XOR EAX, [B]
 OR [DIFF], EAX
 </code></pre>
-<h2 id="为什么要使用散列这种麻烦的东西"><a class="header" href="#为什么要使用散列这种麻烦的东西">为什么要使用散列这种麻烦的东西？</a></h2>
-<p>Your users are entering their password into your website. They are trusting you with their security. If your database gets hacked, and your users' passwords are unprotected, then malicious hackers can use those passwords to compromise your users' accounts on other websites and services (most people use the same password everywhere). It's not just your security that's at risk, it's your users'. You are responsible for your users' security.</p>
+<h2 id="为什么要用散列这么麻烦的东西"><a class="header" href="#为什么要用散列这么麻烦的东西">为什么要用散列这么麻烦的东西？</a></h2>
+<p>您的用户正在您的网站中输入他们的密码。他们信任您并将他们的安全交给了您。如果您的数据库遭到入侵，而且用户的密码未受任何保护，则恶意黑客就可以使用这些密码来破坏您的用户在其他网站和服务上的账户（大多数人在所有地方都使用相同的密码）。面临风险的不仅是您的安全，还有您用户的安全。您应该对用户的安全负责。</p>
 
                     </main>
 
